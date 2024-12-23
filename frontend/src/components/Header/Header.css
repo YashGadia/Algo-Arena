@@ -1,0 +1,19 @@
+.header_main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Ubuntu';
+    font-weight: 400;
+}
+
+.header_navLinks {
+    margin: 10px;
+    color: #7a8181;
+    text-decoration: none;
+}
+
+.active {
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+}
