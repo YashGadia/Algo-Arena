@@ -120,7 +120,7 @@ def getData():
                 
                 upcoming_contests.append({
                     "contestName": name,
-                    "contestPlatform": "LeetCode",
+                    "contestPlatform": "Leetcode",
                     "contestStartDate": contest_start_date,
                     "contestStartTime": contest_start_time
                 })

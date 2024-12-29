@@ -1,0 +1,35 @@
+.loginContainer {
+    min-height: 85vh;
+    width: 100vw;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.leftimage {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rightForm {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.rightForm_Title {
+    font-family: 'Rubik';
+    font-weight: 700;
+    font-size: 50px;
+}
+
+.rightForm_Textfield {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+}

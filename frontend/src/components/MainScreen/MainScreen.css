@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@200&display=swap');
+
+.mainBack {
+    min-height: 93vh;
+    display: flex;
+    padding: 50px 75px;
+}
+
+.container {
+    width: 100%;
+}
+
+.page {
+    width: 100%;
+}
+
+.page hr {
+    width: 60%;
+    margin-left: 14px;
+}
+
+.heading {
+    font-family: 'Rubik';
+    font-weight: 700;
+    font-size: 50px;
+    padding: 10px 10px;
+}
+
+@media only screen and (max-width: 600px) {
+    .heading {
+        font-size: 30px;
+        display: flex;
+        justify-content: center;
+    }
+}

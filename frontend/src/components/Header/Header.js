@@ -22,10 +22,10 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   customAppbarColor: {
-    backgroundColor: 'rgb(5, 151, 153)',
+    backgroundColor: 'rgb(12, 133, 135)',
   },
   logo: {
-    marginLeft: theme.spacing(6),
+    marginLeft: theme.spacing(10),
     cursor: 'pointer',
     width: 60,
     height: 50,
