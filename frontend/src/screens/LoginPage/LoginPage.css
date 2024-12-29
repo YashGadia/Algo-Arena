@@ -17,7 +17,9 @@
 .rightForm {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 25px;
+    justify-content: center;
+    align-items: center;
 }
 
 .rightForm_Title {
