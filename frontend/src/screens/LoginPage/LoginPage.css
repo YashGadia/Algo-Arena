@@ -14,6 +14,14 @@
     align-items: center;
 }
 
+.rightContent {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
 .rightForm {
     display: flex;
     flex-direction: column;
@@ -34,4 +42,9 @@
     gap: 15px;
     align-items: center;
     justify-content: center;
+}
+
+.rightForm_Register_title {
+    text-decoration: underline;
+    cursor: pointer;
 }
