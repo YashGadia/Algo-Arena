@@ -56,7 +56,7 @@ const LoginPage = () => {
               <TextField id="outlined-basic" label="Pasword" size="small" variant="outlined" style={{ width: 350 }} value={ password } onChange={ (e) => setPassword(e.target.value) } />
             </div>
             <div className="rightForm_Button">
-              <Button variant="contained" style={{ backgroundColor: 'rgb(5, 151, 153)', color: 'white' }} startIcon={<LockOpenIcon />} onClick={ submitHandler }>
+              <Button variant="contained" style={{ backgroundColor: '#f57c00', color: 'white' }} startIcon={<LockOpenIcon />} onClick={ submitHandler }>
                 Sign in
               </Button>
             </div>
