@@ -6,6 +6,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './LoginPage.css';
+import { CircularProgress } from '@material-ui/core';
 
 const LoginPage = () => {
 
@@ -36,6 +37,7 @@ const LoginPage = () => {
       console.log(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
       setLoading(false);
+      console.log(loading);
     } catch (error) {
       setError(error.response.data.message);
     }
@@ -56,6 +58,7 @@ const LoginPage = () => {
               <TextField id="outlined-basic" label="Pasword" size="small" variant="outlined" style={{ width: 350 }} value={ password } onChange={ (e) => setPassword(e.target.value) } />
             </div>
             <div className="rightForm_Button">
+              {loading && <CircularProgress style={{ width: 25, height: 25}} />}
               <Button variant="contained" style={{ backgroundColor: '#f57c00', color: 'white' }} startIcon={<LockOpenIcon />} onClick={ submitHandler }>
                 Sign in
               </Button>

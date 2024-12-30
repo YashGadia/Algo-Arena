@@ -44,6 +44,12 @@
     justify-content: center;
 }
 
+.rightForm_Button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .rightForm_Register_title {
     text-decoration: underline;
     cursor: pointer;
