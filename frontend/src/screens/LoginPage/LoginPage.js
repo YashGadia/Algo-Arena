@@ -1,4 +1,5 @@
 import { useState } from "react";
+import React from "react";
 import TextField from "@material-ui/core/TextField";
 import LoginPageImage from "../../images/websiteImages/LoginPageImage.png";
 import Button from "@material-ui/core/Button";
@@ -6,7 +7,16 @@ import LockOpenIcon from "@material-ui/icons/LockOpen";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "./LoginPage.css";
-import { CircularProgress } from "@material-ui/core";
+import {
+  CircularProgress,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+} from "@material-ui/core";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 const LoginPage = ({ history }) => {
@@ -49,6 +59,23 @@ const LoginPage = ({ history }) => {
     }
   };
 
+  const [values, setValues] = React.useState({
+    password: "",
+    showPassword: false,
+  });
+
+  const handleChange = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
+
+  const handleClickShowPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <div className="loginContainer">
       <div className="leftimage">
@@ -71,15 +98,30 @@ const LoginPage = ({ history }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <TextField
-              id="outlined-basic"
-              label="Pasword"
-              size="small"
-              variant="outlined"
-              style={{ width: 350 }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <FormControl variant="outlined" size="small" style={{ width: 350 }}>
+              <InputLabel htmlFor="outlined-adornment-password">
+                Password
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                type={values.showPassword ? "text" : "password"}
+                value={values.password}
+                onChange={handleChange("password")}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                labelWidth={70}
+              />
+            </FormControl>
           </div>
           <div className="rightForm_Button">
             <div className="rightForm_Button_Error">
