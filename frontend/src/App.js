@@ -10,18 +10,19 @@ import LoginPage from './screens/LoginPage/LoginPage.js';
 
 const App = () => (
   <BrowserRouter>
-    <Header />
-    <Routes>
-        <Route path='/' element={<LandingPage />} exact/>
-        <Route path='/login' element={<LoginPage />} exact />
-        <Route path='/register' element={<RegisterPage />} exact />
-        <Route path='/contact' element={<ContactPage />} exact />
-        <Route path='/about' element={<AboutPage />} exact />
-    </Routes>
-    <main style={{minHeight: "93vh"}}>
-    </main>
-    <Footer />
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <Header />
+          <main style={{ flex: 1 }}>
+              <Routes>
+                  <Route path="/" element={<LandingPage />} exact />
+                  <Route path="/login" element={<LoginPage />} exact />
+                  <Route path="/register" element={<RegisterPage />} exact />
+                  <Route path="/contact" element={<ContactPage />} exact />
+                  <Route path="/about" element={<AboutPage />} exact />
+              </Routes>
+          </main>
+          <Footer />
+      </div>
   </BrowserRouter>
 );
-
 export default App;
