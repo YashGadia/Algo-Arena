@@ -53,6 +53,13 @@ const VisuallyHiddenInput = styled("input")({
 const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [pic, setPic] = useState(
+    "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+  );
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState(null);
+  const [picMessage, setPicMessage] = useState(null);
   const [values, setValues] = useState({
     password: "",
     confirmPassword: "",
@@ -74,11 +81,11 @@ const RegisterPage = () => {
     { id: 7, name: "Topcoder", icon: TopcoderLogo },
   ];
 
-  const handlePlatformClick = (id) => {
+  const handlePlatformClick = (name) => {
     setSelectedPlatforms((prev) =>
-      prev.includes(id)
-        ? prev.filter((platformId) => platformId !== id)
-        : [...prev, id]
+      prev.includes(name)
+        ? prev.filter((platformName) => platformName !== name)
+        : [...prev, name]
     );
   };
 
@@ -93,8 +100,41 @@ const RegisterPage = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setError(false);
-    // Submission logic here
+
+    if (values.password !== values.confirmPassword) {
+      setMessage("Passwords do not match.");
+    } else if (selectedPlatforms.length === 0) {
+      setMessage("Select at least one platform");
+    } else {
+      setMessage(null);
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+
+        setLoading(true);
+
+        const { data } = await axios.post(
+          "/api/users",
+          {
+            name,
+            pic,
+            email,
+            password: values.password,
+            platforms: selectedPlatforms,
+          },
+          config
+        );
+
+        console.log(data);
+        setLoading(false);
+        localStorage.setItem("useInfo", JSON.stringify(data));
+      } catch (error) {
+        setError(error.response.data.message);
+      }
+    }
   };
 
   return (
@@ -104,8 +144,6 @@ const RegisterPage = () => {
       <div className="formContainer">
         {/* Left Section */}
         <div className="leftSection">
-          <div className="inputFieldContainer">
-            <p className="inputTitle">Name:</p>
             <TextField
               label="Name"
               variant="outlined"
@@ -113,9 +151,6 @@ const RegisterPage = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-          </div>
-          <div className="inputFieldContainer">
-            <p className="inputTitle">Email:</p>
             <TextField
               label="Email"
               variant="outlined"
@@ -123,9 +158,6 @@ const RegisterPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-          </div>
-          <div className="inputFieldContainer">
-            <p className="inputTitle">Password:</p>
             <FormControl variant="outlined" size="small">
               <InputLabel>Password</InputLabel>
               <OutlinedInput
@@ -151,9 +183,6 @@ const RegisterPage = () => {
                 label="Password"
               />
             </FormControl>
-          </div>
-          <div className="inputFieldContainer">
-            <p className="inputTitle">Confirm Password:</p>
             <FormControl variant="outlined" size="small">
               <InputLabel>Confirm Password</InputLabel>
               <OutlinedInput
@@ -183,7 +212,6 @@ const RegisterPage = () => {
                 label="Confirm Password"
               />
             </FormControl>
-          </div>
           <div className="inputFieldContainer">
             <p className="inputTitle">Upload your profile pic:</p>
             <Button
@@ -214,18 +242,19 @@ const RegisterPage = () => {
           <div className="platform-cards-container">
             {platforms.map((platform) => (
               <SelectableCard
-                key={platform.id}
+                key={platform.name}
                 platform={platform}
-                isSelected={selectedPlatforms.includes(platform.id)}
-                onClick={() => handlePlatformClick(platform.id)}
+                isSelected={selectedPlatforms.includes(platform.name)}
+                onClick={() => handlePlatformClick(platform.name)}
               />
             ))}
           </div>
         </div>
       </div>
-      
+
       <div className="rightForm_Button">
         {error && <ErrorMessage severity="error">{error}</ErrorMessage>}
+        {message && <ErrorMessage severity="error">{message}</ErrorMessage>}
         {loading && <CircularProgress style={{ width: 25, height: 25 }} />}
         <Button
           variant="contained"
