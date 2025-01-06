@@ -89,15 +89,6 @@ const RegisterPage = () => {
     );
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setUploadedFileName(file.name);
-    } else {
-      alert("Please upload a valid image file.");
-    }
-  };
-
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -136,6 +127,33 @@ const RegisterPage = () => {
       }
     }
   };
+
+  const postDetails = (picture) => {
+    if (!picture) {
+      return setPicMessage("Please select an image");
+    }
+
+    setPicMessage(null);
+
+    if(picture.type === "image/jpeg" || picture.type === "image/png") {
+      const data = new FormData();
+      data.append('file', picture);
+      data.append('upload_preset', 'Algo-Arena');
+      data.append('cloud_name', 'ddyks52ua');
+      fetch("https://api.cloudinary.com/v1_1/ddyks52ua/image/upload", {
+        method: "post",
+        body: data
+      }).then((res) => res.json()).then((data) => {
+        console.log(data);
+        setPic(data.url.toString());
+        setUploadedFileName(picture.name);
+      }).catch((err) => {
+        console.log(err);
+      })
+    } else {
+      return setPicMessage("Please select JPEG or PNG image");
+    }
+  }
 
   return (
     <div className="registerContainer">
@@ -212,6 +230,10 @@ const RegisterPage = () => {
                 label="Confirm Password"
               />
             </FormControl>
+
+          {picMessage && (
+            <ErrorMessage severity="error">{picMessage}</ErrorMessage>
+          )}
           <div className="inputFieldContainer">
             <p className="inputTitle">Upload your profile pic:</p>
             <Button
@@ -225,7 +247,7 @@ const RegisterPage = () => {
               <VisuallyHiddenInput
                 type="file"
                 accept="image/*"
-                onChange={handleFileUpload}
+                onChange={(e) => postDetails(e.target.files[0])}
               />
             </Button>
             {uploadedFileName && (
