@@ -47,12 +47,14 @@ export default function ButtonAppBar() {
   const { userInfo } = userLogin;
 
   const handleLogoutClick = () => {
+    console.log("LOGOUT: ", userInfo);
     dispatch(logout());
     navigate("/");
   };
 
   // Redirect to login page
   const handleLoginClick = () => {
+    console.log("LOGIN: ", userInfo);
     navigate("/login");
   };
 
@@ -74,12 +76,12 @@ export default function ButtonAppBar() {
             ALGO-ARENA
           </Typography>
           {userInfo ?
-          <Button onClick={handleLoginClick} className={classes.login}>
-            Login
-          </Button>
-          :
           <Button onClick={handleLogoutClick} className={classes.login}>
             Logout
+          </Button>
+          :
+          <Button onClick={handleLoginClick} className={classes.login}>
+            Login
           </Button>
           }
         </Toolbar>
