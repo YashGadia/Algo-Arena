@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 import LoginPageImage from "../../images/websiteImages/LoginPageImage.png";
 import Button from "@material-ui/core/Button";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 import {
   CircularProgress,
@@ -18,45 +17,29 @@ import {
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../actions/userActions";
 
 const LoginPage = ({ history }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { loading, error, userInfo } = userLogin;
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate("/dashboard");
+    }
+  }, [navigate, userInfo]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setError(false);
 
-    try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
-
-      setLoading(true);
-      const { data } = await axios.post(
-        "/api/users/login",
-        {
-          email,
-          password,
-        },
-        config
-      );
-
-      console.log(data);
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      setLoading(false);
-    } catch (err) {
-      if (err.response && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-      setLoading(false);
-    }
+    dispatch(login(email, password));
   };
 
   const [values, setValues] = React.useState({
