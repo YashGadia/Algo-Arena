@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@material-ui/core/TextField";
-import AliceCarousel from "react-alice-carousel";
 import "react-alice-carousel/lib/alice-carousel.css";
 import Button from "@material-ui/core/Button";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
-import { Col, Form, Row } from "react-bootstrap";
 import { styled } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
@@ -18,7 +16,6 @@ import {
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
-import axios from "axios";
 import AtcoderLogo from "../../images/codingWebsiteLogos/Atcoder.png";
 import CodechefLogo from "../../images/codingWebsiteLogos/Codechef.png";
 import CodeforcesLogo from "../../images/codingWebsiteLogos/Codeforces.png";
@@ -27,6 +24,9 @@ import HackerearthLogo from "../../images/codingWebsiteLogos/Hackerearth.png";
 import LeetcodeLogo from "../../images/codingWebsiteLogos/Leetcode.png";
 import TopcoderLogo from "../../images/codingWebsiteLogos/Topcoder.png";
 import "./RegisterPage.css";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { register } from "../../actions/userActions";
 
 const SelectableCard = ({ platform, isSelected, onClick }) => (
   <div
@@ -67,9 +67,20 @@ const RegisterPage = () => {
     showConfirmPassword: false,
   });
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState("");
+
+  const dispatch = useDispatch();
+
+  const userRegister = useSelector((state) => state.userRegister);
+  const { loading, error, userInfo } = userRegister;
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate("/dashboard");
+    }
+  }, [navigate, userInfo]);
 
   const platforms = [
     { id: 1, name: "Atcoder", icon: AtcoderLogo },
@@ -97,34 +108,7 @@ const RegisterPage = () => {
     } else if (selectedPlatforms.length === 0) {
       setMessage("Select at least one platform");
     } else {
-      setMessage(null);
-      try {
-        const config = {
-          headers: {
-            "Content-type": "application/json",
-          },
-        };
-
-        setLoading(true);
-
-        const { data } = await axios.post(
-          "/api/users",
-          {
-            name,
-            pic,
-            email,
-            password: values.password,
-            platforms: selectedPlatforms,
-          },
-          config
-        );
-
-        console.log(data);
-        setLoading(false);
-        localStorage.setItem("useInfo", JSON.stringify(data));
-      } catch (error) {
-        setError(error.response.data.message);
-      }
+      dispatch(register(name, email, values.password, pic, selectedPlatforms));
     }
   };
 
@@ -135,25 +119,28 @@ const RegisterPage = () => {
 
     setPicMessage(null);
 
-    if(picture.type === "image/jpeg" || picture.type === "image/png") {
+    if (picture.type === "image/jpeg" || picture.type === "image/png") {
       const data = new FormData();
-      data.append('file', picture);
-      data.append('upload_preset', 'Algo-Arena');
-      data.append('cloud_name', 'ddyks52ua');
+      data.append("file", picture);
+      data.append("upload_preset", "Algo-Arena");
+      data.append("cloud_name", "ddyks52ua");
       fetch("https://api.cloudinary.com/v1_1/ddyks52ua/image/upload", {
         method: "post",
-        body: data
-      }).then((res) => res.json()).then((data) => {
-        console.log(data);
-        setPic(data.url.toString());
-        setUploadedFileName(picture.name);
-      }).catch((err) => {
-        console.log(err);
+        body: data,
       })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setPic(data.url.toString());
+          setUploadedFileName(picture.name);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       return setPicMessage("Please select JPEG or PNG image");
     }
-  }
+  };
 
   return (
     <div className="registerContainer">
@@ -162,74 +149,74 @@ const RegisterPage = () => {
       <div className="formContainer">
         {/* Left Section */}
         <div className="leftSection">
-            <TextField
-              label="Name"
-              variant="outlined"
-              size="small"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+          <TextField
+            label="Name"
+            variant="outlined"
+            size="small"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <TextField
+            label="Email"
+            variant="outlined"
+            size="small"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <FormControl variant="outlined" size="small">
+            <InputLabel>Password</InputLabel>
+            <OutlinedInput
+              type={values.showPassword ? "text" : "password"}
+              value={values.password}
+              onChange={(e) =>
+                setValues({ ...values, password: e.target.value })
+              }
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() =>
+                      setValues({
+                        ...values,
+                        showPassword: !values.showPassword,
+                      })
+                    }
+                  >
+                    {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
             />
-            <TextField
-              label="Email"
-              variant="outlined"
-              size="small"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+          </FormControl>
+          <FormControl variant="outlined" size="small">
+            <InputLabel>Confirm Password</InputLabel>
+            <OutlinedInput
+              type={values.showConfirmPassword ? "text" : "password"}
+              value={values.confirmPassword}
+              onChange={(e) =>
+                setValues({ ...values, confirmPassword: e.target.value })
+              }
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() =>
+                      setValues({
+                        ...values,
+                        showConfirmPassword: !values.showConfirmPassword,
+                      })
+                    }
+                  >
+                    {values.showConfirmPassword ? (
+                      <Visibility />
+                    ) : (
+                      <VisibilityOff />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Confirm Password"
             />
-            <FormControl variant="outlined" size="small">
-              <InputLabel>Password</InputLabel>
-              <OutlinedInput
-                type={values.showPassword ? "text" : "password"}
-                value={values.password}
-                onChange={(e) =>
-                  setValues({ ...values, password: e.target.value })
-                }
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() =>
-                        setValues({
-                          ...values,
-                          showPassword: !values.showPassword,
-                        })
-                      }
-                    >
-                      {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password"
-              />
-            </FormControl>
-            <FormControl variant="outlined" size="small">
-              <InputLabel>Confirm Password</InputLabel>
-              <OutlinedInput
-                type={values.showConfirmPassword ? "text" : "password"}
-                value={values.confirmPassword}
-                onChange={(e) =>
-                  setValues({ ...values, confirmPassword: e.target.value })
-                }
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() =>
-                        setValues({
-                          ...values,
-                          showConfirmPassword: !values.showConfirmPassword,
-                        })
-                      }
-                    >
-                      {values.showConfirmPassword ? (
-                        <Visibility />
-                      ) : (
-                        <VisibilityOff />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Confirm Password"
-              />
-            </FormControl>
+          </FormControl>
 
           {picMessage && (
             <ErrorMessage severity="error">{picMessage}</ErrorMessage>
