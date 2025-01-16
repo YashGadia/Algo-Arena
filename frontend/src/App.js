@@ -7,6 +7,7 @@ import AboutPage from './screens/AboutPage/AboutPage.js';
 import ContactPage from './screens/ContactPage/ContactPage.js';
 import RegisterPage from './screens/RegisterPage/RegisterPage.js';
 import LoginPage from './screens/LoginPage/LoginPage.js';
+import DashboardPage from './screens/Dashboard/Dashboard.js';
 
 const App = () => (
   <BrowserRouter>
@@ -19,6 +20,7 @@ const App = () => (
                   <Route path="/register" element={<RegisterPage />} exact />
                   <Route path="/contact" element={<ContactPage />} exact />
                   <Route path="/about" element={<AboutPage />} exact />
+                  <Route path="/dashboard" element={<DashboardPage />} exact />
               </Routes>
           </main>
           <Footer />
